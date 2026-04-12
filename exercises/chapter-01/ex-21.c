@@ -39,20 +39,14 @@ void detab(int tab_width)
             print_blanks(pending_spaces);
             pending_spaces = 0;
         }
-        // Character: Tab : Set column to the next tab stop
+        // Tabs advance to the next tab stop; other characters advance by one column
         if (ch == '\t')
-        {
             column = calculate_next_tab_stop(column, tab_width);
-            pending_spaces = 0;
-        }
         else
             ++column;
-        // Character: Newline : Reset column and pending spaces
+        // Character: Newline : Reset column to 0
         if (ch == '\n')
-        {
             column = 0;
-            pending_spaces = 0;
-        }
         putchar(ch);
     }
 
