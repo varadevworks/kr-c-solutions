@@ -49,6 +49,4 @@ make run FILE=ex-19
 
 ## 📝 Notes
 
-These are my personal solutions for learning and practice.
-Some exercises may have more than one valid solution.
 These solutions were written and tested on macOS.
