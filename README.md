@@ -21,9 +21,9 @@ Each file is named by exercise number, such as `ex-18.c` or `ex-19.c`.
 
 ## 📚 Solutions
 
-| Solutions           | Folder                                         |
-| ------------------- | ---------------------------------------------- |
-| Chapter 1 Solutions | [exercises/chapter-01/](exercises/chapter-01/) |
+| Chapter   | Folder                                         |
+| --------- | ---------------------------------------------- |
+| Chapter 1 | [exercises/chapter-01/](exercises/chapter-01/) |
 
 ## 🛠️ Build
 
