@@ -112,7 +112,6 @@ void print_line(char buffer[], int fold_position)
 }
 
 // Move leftover characters to the front after a fold. Returns the last position in the buffer after the shift, which is the new length of the buffer for the next pass.
-// Drops leading blanks from the carried-over text if they are before the line limit.
 int shift_buffer(char buffer[], int start, int end, int max_line_size)
 {
     int position = 0;
