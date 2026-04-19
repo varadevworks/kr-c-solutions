@@ -57,3 +57,4 @@ dkms.conf
 # test folder
 test/
 build/
+.vscode/settings.json

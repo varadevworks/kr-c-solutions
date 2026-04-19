@@ -49,7 +49,7 @@ void detab(int tab_width)
             column = 0;
         putchar(ch);
     }
-
+    // Flush any pending spaces at the end of the input not followed by a newline
     if (pending_spaces != 0)
         print_blanks(pending_spaces);
 }
