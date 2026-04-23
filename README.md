@@ -44,7 +44,13 @@ make ex-19
 Run a program:
 
 ```sh
-make run FILE=ex-19
+make run FILE=ex-19.c
+```
+
+Run a program with input from a file:
+
+```sh
+make run FILE=ex-19.c INPUT=input.txt
 ```
 
 ## 📝 Notes
