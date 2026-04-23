@@ -1,7 +1,7 @@
 CC := clang
 CFLAGS := -Wall -Wextra -Wpedantic -std=c11
 
-SRC_DIRS := exercises/chapter-01
+SRC_DIRS := exercises/chapter-01 exercises/chapter-02
 VPATH := $(SRC_DIRS)
 SRCS := $(foreach dir,$(SRC_DIRS),$(wildcard $(dir)/*.c))
 PROGRAMS := $(basename $(notdir $(SRCS)))
