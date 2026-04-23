@@ -23,7 +23,7 @@ void remove_comments(void)
     int escape_count = 0;
     while ((ch = getchar()) != EOF)
     {
-        //     STATE: OUT
+        // STATE: OUT
         if (state == OUT)
         {
             if (ch == '/')
