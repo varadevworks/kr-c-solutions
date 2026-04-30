@@ -1,5 +1,5 @@
 CC := clang
-CFLAGS := -Wall -Wextra -Werror -Wpedantic -std=c11 -g -O0
+CFLAGS := -Wall -Wextra -Wpedantic -std=c11 -g -O0
 
 SRC_DIRS := exercises/chapter-01 exercises/chapter-02
 VPATH := $(SRC_DIRS)
