@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <ctype.h>
-#define LENGTH 100
 
 double atof(char s[]);
 
