@@ -23,6 +23,7 @@ int main(void)
     int type;
     double op2;
     char s[MAXOP];
+    double last = 0.0;
 
     while ((type = getop(s)) != EOF)
     {
@@ -58,17 +59,8 @@ int main(void)
         case '=':
             putvar(s[0], pop());
             break;
-        case 'p':
-            printf("stack top:\t%.8g\n", top());
-            break;
-        case 'd':
-            duplicate();
-            break;
-        case 's':
-            swap();
-            break;
-        case 'c':
-            clear();
+        case '_':
+            push(last);
             break;
         case VARIABLE:
             push(getvar(s[0]));
@@ -83,26 +75,26 @@ int main(void)
                 push(sin(pop()));
             else if (strcmp(s, "exp") == 0)
                 push(exp(pop()));
-            else if (strcmp(s, "p") == 0)
+            else if (strcmp(s, "print") == 0)
                 printf("stack top:\t%.8g\n", top());
-            else if (strcmp(s, "d") == 0)
+            else if (strcmp(s, "dup") == 0)
                 duplicate();
-            else if (strcmp(s, "s") == 0)
+            else if (strcmp(s, "swap") == 0)
                 swap();
-            else if (strcmp(s, "c") == 0)
+            else if (strcmp(s, "clear") == 0)
                 clear();
             else
                 printf("error: unknown function %s\n", s);
             break;
         case '\n':
-            printf("\t%.8g\n", pop());
+            last = pop();
+            printf("\t%.8g\n", last);
             break;
         default:
             printf("error: unknown command %s\n", s);
             break;
         }
     }
-
     return 0;
 }
 
@@ -187,32 +179,29 @@ int getop(char s[])
 
     i = 0;
 
-    if (c >= 'A' && c <= 'Z')
+    if (!isdigit(c) && c != '.' && c != '-')
     {
-        while ((c = getch()) == ' ' || c == '\t')
-            ;
+        while (isalpha(c))
+            s[++i] = c = getch();
 
-        if (c == '=')
-            return c;
-
-        if (isdigit(c))
+        if (i == 1) /* single character variable */
         {
+            while (c == ' ' || c == '\t')
+                c = getch();
+
+            if (c == '=') /* assignment operator for variable */
+                return c;
+
             ungetch(c);
             return VARIABLE;
         }
-    }
-
-    if (!isdigit(c) && c != '.' && c != '-')
-    {
-        if (isalpha(c)) /* collect function name */
+        else if (i > 1 && c != EOF) /* function name */
         {
-            while (isalpha(c))
-                s[++i] = c = getch();
             ungetch(c);
             s[i] = '\0';
             return NAME;
         }
-        c = s[0];
+
         return c; /* not a number */
     }
 
@@ -258,21 +247,21 @@ void ungetch(int c)
         buf[bufp++] = c;
 }
 
-double vars[26];
+double vars[52]; /* variables A-Z and a-z */
 
 void putvar(char c, double d)
 {
-    if (c >= 'A' && c <= 'Z')
-        vars[c - 'A'] = d;
+    if (isalpha(c))
+        vars[c - (isupper(c) ? 'A' : ('a' - 26))] = d;
     else
         printf("error: invalid variable name %c\n", c);
 }
 
 double getvar(char c)
 {
-    if (c >= 'A' && c <= 'Z')
-        return vars[c - 'A'];
-    else
-        printf("error: invalid variable name %c\n", c);
+    if (isalpha(c))
+        return vars[c - (isupper(c) ? 'A' : ('a' - 26))];
+
+    printf("error: invalid variable name %c\n", c);
     return 0.0;
 }
