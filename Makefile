@@ -1,5 +1,15 @@
+UNAME_S := $(shell uname -s)
+
+ifeq ($(origin CC),default)
+ifeq ($(UNAME_S),Darwin)
 CC := clang
-CFLAGS := -Wall -Wextra -Wpedantic -std=c11 -g -O0
+else
+CC := gcc
+endif
+endif
+
+CFLAGS ?= -Wall -Wextra -Wpedantic -std=c11 -g -O0
+LDLIBS ?= -lm
 
 SRC_DIRS := exercises/chapter-01 exercises/chapter-02 exercises/chapter-03 exercises/chapter-04 exercises/chapter-05 exercises/chapter-06 exercises/chapter-07 exercises/chapter-08 exercises/chapter-09 exercises/chapter-10 exercises/chapter-11 exercises/chapter-12 exercises/chapter-13 exercises/chapter-14
 VPATH := $(SRC_DIRS)
@@ -27,7 +37,7 @@ build:
 	@mkdir -p $@
 
 build/%: %.c | build
-	$(CC) $(CFLAGS) $< -o $@
+	$(CC) $(CFLAGS) $< -o $@ $(LDLIBS)
 
 $(PROGRAMS): %: build/%
 	@true
