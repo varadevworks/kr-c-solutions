@@ -87,10 +87,9 @@ int main(void)
                 printf("error: unknown function %s\n", s);
             break;
         case '\n':
+        case '\0':
             last = pop();
             printf("\t%.8g\n", last);
-            break;
-        case '\0':
             break;
         default:
             printf("error: unknown command %s\n", s);
@@ -247,19 +246,15 @@ int getop(char s[])
 
 int get_line(void)
 {
-    int i;
-
+    int i, r;
+    r = 0;
     for (i = 0; i < (MAXLINESIZE - 1) && (line[i] = getchar()) != '\n' && line[i] != EOF; i++)
         ;
 
-    if (line[0] == EOF)
-        return EOF;
-
-    if (i < MAXLINESIZE - 1 && line[i] != EOF)
-        i++;
-
+    r = (line[0] == EOF) ? EOF : i;
     line[i] = '\0';
-    return i;
+
+    return r;
 }
 
 double vars[52]; /* variables A-Z and a-z */
