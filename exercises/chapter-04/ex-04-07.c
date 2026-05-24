@@ -57,7 +57,7 @@ int main(void)
                 printf("error: zero divisor\n");
             break;
         case '=':
-            putvar(s[0], pop());
+            putvar(s[0], top());
             break;
         case '_':
             push(last);

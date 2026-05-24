@@ -90,6 +90,8 @@ int main(void)
             last = pop();
             printf("\t%.8g\n", last);
             break;
+        case '\0':
+            break;
         default:
             printf("error: unknown command %s\n", s);
             break;
@@ -98,14 +100,14 @@ int main(void)
     return 0;
 }
 
-#define MAXVAL 100
+#define MAXSTACKSIZE 100
 
 int sp = 0;
-double val[MAXVAL];
+double val[MAXSTACKSIZE];
 
 void push(double f)
 {
-    if (sp < MAXVAL)
+    if (sp < MAXSTACKSIZE)
         val[sp++] = f;
     else
         printf("error: stack full, can`t push %g\n", f);
@@ -113,7 +115,7 @@ void push(double f)
 
 double pop(void)
 {
-    if (sp > 0)
+    if (sp > 0) 
         return val[--sp];
     else
     {
@@ -165,15 +167,24 @@ void clear(void)
 }
 
 #include <ctype.h>
+#define MAXLINESIZE 1000
 
-int getch(void);
-void ungetch(int);
+int line[MAXLINESIZE];
+int chpos = -1;
+
+void getline();
 
 int getop(char s[])
 {
     int i, c;
 
-    while ((s[0] = c = getch()) == ' ' || c == '\t')
+    if (chpos < 0) /* Read new line */
+    { 
+        chpos = 0;
+        getline();
+    }
+
+    while ((s[0] = c = line[chpos++]) == ' ' || c == '\t')
         ;
     s[1] = '\0';
 
@@ -182,72 +193,64 @@ int getop(char s[])
     if (!isdigit(c) && c != '.' && c != '-')
     {
         while (isalpha(c))
-            s[++i] = c = getch();
+            s[++i] = c = line[chpos++];
 
         if (i == 1) /* single character variable */
         {
             while (c == ' ' || c == '\t')
-                c = getch();
+                c = line[chpos++];
 
             if (c == '=') /* assignment operator for variable */
                 return c;
 
-            ungetch(c);
+            chpos--;
             return VARIABLE;
         }
         else if (i > 1 && c != EOF) /* function name */
         {
-            ungetch(c);
+            chpos--;
             s[i] = '\0';
             return NAME;
         }
+
+        if (c == '\0')
+            chpos = -1;
 
         return c; /* not a number */
     }
 
     if (c == '-') /* handle negative numbers */
     {
-        s[++i] = c = getch();
+        s[++i] = c = line[chpos++];
         if (!isdigit(c) && c != '.')
         {
-            ungetch(c);
+            chpos--;
             return s[i - 1];
         }
     }
 
     if (isdigit(c)) /* collect integer part */
-        while (isdigit(s[++i] = c = getch()))
+        while (isdigit(s[++i] = c = line[chpos++]))
             ;
 
     if (c == '.') /* collect fractional part */
-        while (isdigit(s[++i] = c = getch()))
+        while (isdigit(s[++i] = c = line[chpos++]))
             ;
     s[i] = '\0';
 
-    ungetch(c);
+    chpos--;
+
     return NUMBER;
 }
 
-char lastchread = 0; /* last character read */
-int lastch;          /* last character */
-
-int getch(void)
+void getline()
 {
-    if (lastchread == 1)
-    {
-        lastchread = 0;
-        return lastch;
-    }
-    return getchar();
-}
+    int i;
 
-void ungetch(int c)
-{
-    if (c != EOF)
-    {
-        lastch = c;
-        lastchread = 1;
-    }
+    for (i = 0; i < (MAXLINESIZE - 1) && (line[i] = getchar()) != '\n' && line[i] != EOF; i++)
+        ;
+    
+    line[i+1] = '\0';
 }
 
 double vars[52]; /* variables A-Z and a-z */
