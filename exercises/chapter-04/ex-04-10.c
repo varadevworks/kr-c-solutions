@@ -115,7 +115,7 @@ void push(double f)
 
 double pop(void)
 {
-    if (sp > 0) 
+    if (sp > 0)
         return val[--sp];
     else
     {
@@ -172,19 +172,21 @@ void clear(void)
 int line[MAXLINESIZE];
 int chpos = -1;
 
-void getline();
+int get_line(void);
 
 int getop(char s[])
 {
-    int i, c;
+    int i, c, r;
 
     if (chpos < 0) /* Read new line */
-    { 
+    {
         chpos = 0;
-        getline();
+        r = get_line();
+        if (r == EOF)
+            return EOF;
     }
 
-    while ((s[0] = c = line[chpos++]) == ' ' || c == '\t')
+    while ((s[0] = c = line[chpos++]) != '\0' && (c == ' ' || c == '\t'))
         ;
     s[1] = '\0';
 
@@ -206,7 +208,7 @@ int getop(char s[])
             chpos--;
             return VARIABLE;
         }
-        else if (i > 1 && c != EOF) /* function name */
+        else if (i > 1) /* function name */
         {
             chpos--;
             s[i] = '\0';
@@ -230,11 +232,11 @@ int getop(char s[])
     }
 
     if (isdigit(c)) /* collect integer part */
-        while (isdigit(s[++i] = c = line[chpos++]))
+        while ((s[++i] = c = line[chpos++]) && isdigit(s[i]))
             ;
 
     if (c == '.') /* collect fractional part */
-        while (isdigit(s[++i] = c = line[chpos++]))
+        while ((s[++i] = c = line[chpos++]) && isdigit(s[i]))
             ;
     s[i] = '\0';
 
@@ -243,14 +245,21 @@ int getop(char s[])
     return NUMBER;
 }
 
-void getline()
+int get_line(void)
 {
     int i;
 
     for (i = 0; i < (MAXLINESIZE - 1) && (line[i] = getchar()) != '\n' && line[i] != EOF; i++)
         ;
-    
-    line[i+1] = '\0';
+
+    if (line[0] == EOF)
+        return EOF;
+
+    if (i < MAXLINESIZE - 1 && line[i] != EOF)
+        i++;
+
+    line[i] = '\0';
+    return i;
 }
 
 double vars[52]; /* variables A-Z and a-z */
