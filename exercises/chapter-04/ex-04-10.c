@@ -87,7 +87,6 @@ int main(void)
                 printf("error: unknown function %s\n", s);
             break;
         case '\n':
-        case '\0':
             last = pop();
             printf("\t%.8g\n", last);
             break;
@@ -215,7 +214,10 @@ int getop(char s[])
         }
 
         if (c == '\0')
+        {
             chpos = -1;
+            c = '\n';
+        }
 
         return c; /* not a number */
     }
