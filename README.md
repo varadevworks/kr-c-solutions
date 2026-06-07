@@ -1,6 +1,6 @@
 # kr-c-solutions
 
-My solutions to exercises from *The C Programming Language* by Kernighan and Ritchie.
+My solutions to exercises from *The C Programming Language Second Edition* by Kernighan and Ritchie.
 
 ## 📁 Structure
 
@@ -25,6 +25,8 @@ Each file is named by chapter and exercise number, such as `ex-01-18.c` or `ex-0
 | --------- | ---------------------------------------------- |
 | Chapter 1 | [exercises/chapter-01/](exercises/chapter-01/) |
 | Chapter 2 | [exercises/chapter-02/](exercises/chapter-02/) |
+| Chapter 3 | [exercises/chapter-03/](exercises/chapter-03/) |
+| Chapter 4 | [exercises/chapter-04/](exercises/chapter-04/) |
 
 ## 🛠️ Build
 
