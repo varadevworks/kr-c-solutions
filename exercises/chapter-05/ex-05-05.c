@@ -44,4 +44,5 @@ char *strncpy(char *s, const char *t, size_t n)
 
 char *strncat(char *s, const int *t, size_t n){
 
+    
 }
