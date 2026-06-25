@@ -83,18 +83,12 @@ void month_day(int year, int yearday, int *pmonth, int *pday)
               return;
        }
 
-       *pmonth = 0;
+       *pmonth = 1;
        *pday = 0;
 
-       while (yearday > 0)
-              if (yearday >= daytab[leap][*pmonth + 1])
-              {
-                     yearday -= daytab[leap][*pmonth + 1];
-                     *pmonth = *pmonth + 1;
-              }
-              else
-              {
-                     *pday = yearday;
-                     yearday = 0;
-              }
+       while (yearday > daytab[leap][*pmonth])
+              yearday -= daytab[leap][(*pmonth)++];
+
+       *pday = yearday;
+       yearday = *pmonth;
 }
