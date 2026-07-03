@@ -6,7 +6,6 @@
 #define MAXOP 100  /* max size of operand or operator */
 #define NUMBER '0' /* signal that a number was found */
 
-int getop(char[]);
 void push(double);
 double pop(void);
 int isnum(char *s);
@@ -25,26 +24,26 @@ int main(int argc, char *argv[])
         {
             switch (*arg) // first character of the argument
             {
-            case '+':
-                push(pop() + pop());
-                break;
-            case '-':
-                op2 = pop();
-                push(pop() - op2);
-                break;
-            case '*':
-                push(pop() * pop());
-                break;
-            case '/':
-                op2 = pop();
-                if (op2 != 0.0)
-                    push(pop() / op2);
-                else
-                    printf("error: zero divisor\n");
-                break;
-            default:
-                printf("error: unknown command %s\n", arg);
-                break;
+                case '+':
+                    push(pop() + pop());
+                    break;
+                case '-':
+                    op2 = pop();
+                    push(pop() - op2);
+                    break;
+                case '*':
+                    push(pop() * pop());
+                    break;
+                case '/':
+                    op2 = pop();
+                    if (op2 != 0.0)
+                        push(pop() / op2);
+                    else
+                        printf("error: zero divisor\n");
+                    break;
+                default:
+                    printf("error: unknown command %s\n", arg);
+                    break;
             }
         }
     }
@@ -79,6 +78,7 @@ double pop(void)
     }
 }
 
+/* isnum: check if string s is a valid number */
 int isnum(char *s)
 {
     int isnum = 0;

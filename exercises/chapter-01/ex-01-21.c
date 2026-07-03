@@ -1,16 +1,16 @@
 #include <stdio.h>
 
-void detab(int tab_width);
+void entab(int tab_width);
 void print_blanks(int space_count);
 int calculate_next_tab_stop(int column, int tab_width);
 
 int main(void)
 {
     int tab_width = 8;
-    detab(tab_width);
+    entab(tab_width);
 }
 
-void detab(int tab_width)
+void entab(int tab_width)
 {
     int ch;
     int column = 0;
