@@ -176,6 +176,7 @@ void entab(int argc, char *argv[])
         {
             colp = 0;
             ntabp = 0;
+            nspaces = 0;
             argco = argc;
             argvo = argv;
         }
