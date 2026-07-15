@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     if (argc > 0)
     {
         argv++; /* get program name */
-        // printf("info: provided program name: %s\n", *argvP);
+        // printf("info: provided program name: %s\n", *argv);
         argc--; /* decrement argument count */
     }
     else
