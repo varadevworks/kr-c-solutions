@@ -15,7 +15,6 @@ void quicksort(void *lineptr[], int left, int right, int (*comp)(void *, void *)
 int numcmp(const char *, const char *);
 int strcasecmp(const char *, const char *);
 int strdircmp(const char *, const char *);
-int strdircmp(const char *, const char *);
 int strdircasecmp(const char *, const char *);
 int isdircase(char c);
 
@@ -194,115 +193,47 @@ int strcasecmp(const char *s1, const char *s2)
 
 int strdircmp(const char *s1, const char *s2)
 {
-    int f1 = 0, f2 = 0;
-    int cs1 = 0, cs2 = 0;
-    while (*s1 != '\0' && *s2 != '\0')
+    while (*s1 != '\0' && *s2 != '\0') /* check both strings are not at the end */
     {
-        if (!f1 && *s1 != '\0')
-        {
-            if (isdircase(*s1))
-            {
-                f1 = 1;
-                cs1 = *s1++;
-            }
-            else
-                s1++;
-        }
-
-        if (!f2 && *s2 != '\0')
-        {
-            if (isdircase(*s2))
-            {
-                f2 = 1;
-                cs2 = *s2++;
-            }
-            else
-                s2++;
-        }
-
-        if (f1 && f2)
-        {
-            if (cs1 != cs2)
-                return cs1 - cs2;
-            f1 = 0;
-            f2 = 0;
-        }
-    }
-
-    if (!f1)
-    {
-        while (*s1 != '\0' && !isdircase(*s1))
+        while (*s1 != '\0' && !isdircase(*s1)) /* string s1: skip non directory characters */
             s1++;
-        cs1 = *s1;
-    }
 
-    if (!f2)
-    {
-        while (*s2 != '\0' && !isdircase(*s2))
+        while (*s2 != '\0' && !isdircase(*s2)) /* string s2: skip non directory characters */
             s2++;
-        cs2 = *s2;
+
+        if (*s1 != *s2 || *s1 == '\0' || *s2 == '\0') /* stop if characters differ or end of either string */
+            break;
+
+        s1++; /* move to the next character in s1 */
+        s2++; /* move to the next character in s2 */
     }
 
-    return cs1 - cs2;
+    return *s1 - *s2;
 }
 
 int strdircasecmp(const char *s1, const char *s2)
 {
-    int f1 = 0, f2 = 0;
-    int cs1 = 0, cs2 = 0;
-    while (*s1 != '\0' && *s2 != '\0')
+    while (*s1 != '\0' && *s2 != '\0') /* check both strings are not at the end */
     {
-        if (!f1 && *s1 != '\0')
-        {
-            if (isdircase(*s1))
-            {
-                f1 = 1;
-                cs1 = tolower(*s1++);
-            }
-            else
-                s1++;
-        }
-
-        if (!f2 && *s2 != '\0')
-        {
-            if (isdircase(*s2))
-            {
-                f2 = 1;
-                cs2 = tolower(*s2++);
-            }
-            else
-                s2++;
-        }
-
-        if (f1 && f2)
-        {
-            if (cs1 != cs2)
-                return cs1 - cs2;
-            f1 = 0;
-            f2 = 0;
-        }
-    }
-
-    if (!f1)
-    {
-        while (*s1 != '\0' && !isdircase(*s1))
+        while (*s1 != '\0' && !isdircase(*s1)) /* string s1: skip non directory characters */
             s1++;
-        cs1 = tolower(*s1);
-    }
 
-    if (!f2)
-    {
-        while (*s2 != '\0' && !isdircase(*s2))
+        while (*s2 != '\0' && !isdircase(*s2)) /* string s2: skip non directory characters */
             s2++;
-        cs2 = tolower(*s2);
+
+        if (tolower(*s1) != tolower(*s2) || *s1 == '\0' || *s2 == '\0') /* stop if characters differ or end of either string */
+            break;
+
+        s1++; /* move to the next character in s1 */
+        s2++; /* move to the next character in s2 */
     }
 
-    return cs1 - cs2;
+    return tolower(*s1) - tolower(*s2);
 }
 
-inline int isdircase(char c)
+int isdircase(char c)
 {
-    return isalnum((unsigned char)c) || isblank((unsigned char)c);
+    return isalnum((unsigned char)c) || c == ' ';
 }
 
 void swap(void *v[], int i, int j)
