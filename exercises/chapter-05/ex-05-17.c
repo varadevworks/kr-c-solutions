@@ -62,23 +62,6 @@ static void usage(void)
     printf("  -<end> : specify end column for sort key\n");
 }
 
-/* print_options: print parsed sort key options */
-static void print_options(void)
-{
-    printf("Parsed sort key options:\n");
-    for (int i = 0; i < keycnt; i++)
-    {
-        printf("Sort Key %d: Start Column: %d, End Column: %d, Numeric: %d, Reverse: %d, Fold: %d, Directory: %d\n",
-               i + 1,
-               options[i][0],
-               options[i][1],
-               options[i][2],
-               options[i][3],
-               options[i][4],
-               options[i][5]);
-    }
-}
-
 /* parse_options: parse command line options */
 static int parse_options(int argc, char *argv[])
 {
@@ -200,7 +183,7 @@ static int parse_options(int argc, char *argv[])
     }
 
     // save last parsed options if end column is not specified
-    if (keycnt < MAXSORTKEYCOUNT && prevch == '+')
+    if ((keycnt < MAXSORTKEYCOUNT && prevch == '+') || (keycnt == 0))
     {
         options[keycnt][0] = start;
         options[keycnt][1] = end;
@@ -213,8 +196,6 @@ static int parse_options(int argc, char *argv[])
         prevch = 0;
         keycnt++;
     }
-
-    print_options(); // Print parsed options for debugging
 
     return 0;
 }
@@ -422,7 +403,7 @@ int comparator(const char *s1, const char *s2)
     char sline[MAXLINELEN];
     char tline[MAXLINELEN];
     int result = 0;
-    int (*cmp)(const char *, const char *) = strcmp; /* default comparison function */
+    int (*cmp)(const char *, const char *);
 
     for (int i = 0; i < keycnt; i++)
     {
@@ -432,6 +413,8 @@ int comparator(const char *s1, const char *s2)
         int reverse = options[i][3];
         int fold = options[i][4];
         int directory = options[i][5];
+
+        cmp = strcmp; /* default comparison function */
 
         /* s1: copy field to sline */
         copy_field(sline, s1, start, end);
@@ -454,7 +437,7 @@ int comparator(const char *s1, const char *s2)
         result = cmp(sline, tline);
 
         if (result != 0) /* if equal, continue to next sort key */
-            return reverse * result;
+            return (reverse == 0 ? result : -result);
     }
 
     return 0; /* all fields are equal */
