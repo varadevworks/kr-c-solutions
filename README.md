@@ -27,6 +27,7 @@ Each file is named by chapter and exercise number, such as `ex-01-18.c` or `ex-0
 | Chapter 2 | [exercises/chapter-02/](exercises/chapter-02/) |
 | Chapter 3 | [exercises/chapter-03/](exercises/chapter-03/) |
 | Chapter 4 | [exercises/chapter-04/](exercises/chapter-04/) |
+| Chapter 5 | [exercises/chapter-05/](exercises/chapter-05/) |
 
 ## 🛠️ Build
 
