@@ -3,6 +3,7 @@
 #include <ctype.h>
 
 #define MAXTOKEN 100
+#define MAXOUT 1000
 
 enum
 {
@@ -19,7 +20,8 @@ int tokentype;           /*type of last token*/
 char token[MAXTOKEN];    /* last token string */
 char name[MAXTOKEN];     /* identifier name */
 char datatype[MAXTOKEN]; /* data type = char, int, etc. */
-char out[1000];
+char out[MAXOUT];        /* output string */
+int err = 0;             /* error flag */
 
 int main(void) /* convert declaration to words */
 {
@@ -28,8 +30,19 @@ int main(void) /* convert declaration to words */
         strcpy(datatype, token); /* 1st token on line is the datatype */
         out[0] = '\0';
         dcl(); /* parse rest of line */
-        if (tokentype != '\n')
-            printf("syntax error\n");
+        if (tokentype != '\n' && tokentype != EOF && err == 0)
+        {
+            printf("syntax error.\n");
+            err = 1;
+        }
+
+        if (err)
+        {
+            while (tokentype != '\n' && tokentype != EOF) /* read the rest of the line to skip */
+                gettoken();
+            err = 0;
+            continue;
+        }
         printf("%s: %s %s\n", name, out, datatype);
     }
 
@@ -44,6 +57,10 @@ void dcl(void)
     for (ns = 0; gettoken() == '*';) /* count *'s */
         ns++;
     dirdcl();
+
+    if (err)
+        return;
+
     while (ns-- > 0)
         strcat(out, " pointer to");
 }
@@ -56,13 +73,22 @@ void dirdcl(void)
     if (tokentype == '(') /* (dcl) */
     {
         dcl();
-        if (tokentype != ')')
+        if (tokentype != ')' && err == 0)
+        {
             printf("error: missing )\n");
+            err = 1;
+        }
     }
     else if (tokentype == NAME) /* variable name*/
         strcpy(name, token);
     else
+    {
         printf("error: expected name or (dcl)\n");
+        err = 1;
+    }
+
+    if (err)
+        return;
 
     while ((type = gettoken()) == PARENS || type == BRACKETS)
         if (type == PARENS)
@@ -98,8 +124,15 @@ int gettoken(void) /* return next token */
     }
     else if (c == '[')
     {
-        for (*p++ = c; (*p++ = getch()) != ']';)
+        for (*p++ = c; (*p++ = getch()) != ']' && *(p - 1) != '\n' && *(p - 1) != EOF;)
             ;
+        if (*(p - 1) == '\n' || *(p - 1) == EOF)
+        {
+            printf("error: missing ]\n");
+            err = 1;
+            ungetch(*(p - 1));
+            return tokentype = '[';
+        }
         *p = '\0';
         return tokentype = BRACKETS;
     }
