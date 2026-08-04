@@ -58,3 +58,5 @@ dkms.conf
 test/
 build/
 .vscode/settings.json
+.vscode/tasks.json
+.vscode/launch.json
