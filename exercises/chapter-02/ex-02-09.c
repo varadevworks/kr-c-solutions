@@ -4,7 +4,7 @@ int bitcount(unsigned int x);
 
 int main(void)
 {
-    unsigned int x = 199;
+    unsigned int x = 196;
     int b;
     b = bitcount(x);
     printf("x: %u => bitcount : %d\n", x, b);
@@ -14,12 +14,11 @@ int bitcount(unsigned int x)
 {
     int b = 0;
 
-    if (x > 0)
-        b = 1;
-
-    while ((x &= (x - 1)) > 0)
+    while (x != 0)
+    {
+        x &= (x - 1);
         b++;
-
+    }
     return b;
 }
 
