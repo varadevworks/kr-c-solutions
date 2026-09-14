@@ -2,9 +2,6 @@
 #include <ctype.h>
 #include <string.h>
 
-/*  Our version of getword does not properly handle underscores, string constants,
-comments, or preprocessor control lines. Write a better version. */
-
 #define MAXWORD 100
 #define NKEYS (sizeof(keytab) / sizeof(keytab[0]))
 
