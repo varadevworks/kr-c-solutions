@@ -81,7 +81,7 @@ struct tnode *addtree(struct tnode *p, char *w)
         p->left = p->right = NULL;
     }
     else if ((cond = strcmp(gw, p->word)) == 0) /* equal to the current node */
-        addvtree(p->gvnode, w);                 /* do nothing */
+        addvtree(p->gvnode, w);                 /* add to the variable node tree */
     else if (cond < 0)                          /* less than into left subtree */
         p->left = addtree(p->left, w);
     else /* greater than into right subtree */
