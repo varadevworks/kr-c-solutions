@@ -82,27 +82,21 @@ struct nlist *install(char *name, char *defn)
 /* undef: remove (name, defn) from hashtab */
 int undef(char *name)
 {
-    unsigned hashval = hash(name);         /* hashvalue of name */
-    struct nlist *prev = NULL;             /* previous pointer */
-    struct nlist *curr = hashtab[hashval]; /* current pointer */
+    unsigned hashval = hash(name); /* hashvalue of name */
+    struct nlist *curr, *prev;     /* current, previous pointer */
 
-    while (curr != NULL && strcmp(curr->name, name) != 0) /* traverse chain untill match is found or end is reached */
-    {
-        prev = curr;
-        curr = curr->next;
-    }
-
-    if (curr != NULL) /* match found */
-    {
-        if (prev == NULL) /* first element in chain */
-            hashtab[hashval] = curr->next;
-        else /* not the first element in chain */
-            prev->next = curr->next;
-        free((void *)curr->name);
-        free((void *)curr->defn);
-        free((void *)curr);
-        return 1;
-    }
+    for (prev = NULL, curr = hashtab[hashval]; curr != NULL; prev = curr, curr = curr->next)
+        if (strcmp(curr->name, name) == 0) /* match found */
+        {
+            if (prev == NULL) /* first element in chain */
+                hashtab[hashval] = curr->next;
+            else /* not the first element in chain */
+                prev->next = curr->next;
+            free((void *)curr->name);
+            free((void *)curr->defn);
+            free((void *)curr);
+            return 1;
+        }
 
     return 0;
 }
