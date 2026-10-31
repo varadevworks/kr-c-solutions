@@ -2,82 +2,107 @@
 #include <stdlib.h>
 #include <ctype.h>
 
-#define MAXOP 100
-#define NUMBER '0' /* signal that a number was found */
+#define MAXLINELEN 101
+#define CHECKOPCNT(sp, cnt)                     \
+    if (sp < cnt)                               \
+    {                                           \
+        printf("error: not enough operands\n"); \
+        break;                                  \
+    }
 
-int getop(char[]);
 void push(double);
 double pop(void);
+int get_line(char[], int);
 
 int main(void)
 {
-    int type;
-    char s[MAXOP];
-    double op2;
-    char fmt[20];
+    char line[MAXLINELEN]; /* buffer to hold the current line */
+    char *p;               /* pointer to the current position in the line */
+    int rs = 0, n = 0;     /* rs: result of sscanf, n: number of characters read */
+    char c;                /* character read */
+    double op1, op2;       /* variables to hold the number read */
 
-    snprintf(fmt, sizeof(fmt), "%%%ds", MAXOP - 1);
-
-    while (scanf(fmt, s) == 1)
+    while (get_line(line, MAXLINELEN) > 0)
     {
-        type = getop(s);
-        switch (type)
+        p = line; /* reset pointer to the start of the line */
+        rs = 0;   /* reset sscanf result for the new line */
+        n = 0;    /* reset number of characters read for the new line */
+        while (*p != '\0')
         {
-        case NUMBER:
-            push(atof(s));
-            break;
-        case '+':
-            push(pop() + pop());
-            break;
-        case '*':
-            push(pop() * pop());
-            break;
-        case '-':
-            op2 = pop();
-            push(pop() - op2);
-            break;
-        case '/':
-            op2 = pop();
-            if (op2 != 0.0)
-                push(pop() / op2);
-            else
-                printf("error: zero divisor\n");
-            break;
-        case 'p':
-            printf("\t%.8g\n", pop());
-            break;
-        default:
-            printf("error: unknown command %s\n", s);
-            break;
+            /* 1. try read double */
+            rs = sscanf(p, "%lf%n", &op2, &n);
+            if (rs > 0) /* successfully read a number */
+            {
+                push(op2);
+                p = p + n;
+                continue;
+            }
+
+            /* 2. try read double failed, read character */
+            rs = sscanf(p, "%c%n", &c, &n);
+            if (rs > 0)
+            {
+                p = p + n;
+                if (c == ' ' || c == '\t') /* skip whitespace */
+                    continue;
+
+                switch (c) /* perform operation */
+                {
+                case '+':
+                    CHECKOPCNT(sp, 2);
+                    op2 = pop();
+                    op1 = pop();
+                    push(op1 + op2);
+                    break;
+                case '*':
+                    CHECKOPCNT(sp, 2);
+                    op2 = pop();
+                    op1 = pop();
+                    push(op1 * op2);
+                    break;
+                case '-':
+                    CHECKOPCNT(sp, 2);
+                    op2 = pop();
+                    op1 = pop();
+                    push(op1 - op2);
+                    break;
+                case '/':
+                    CHECKOPCNT(sp, 2);
+                    op2 = pop();
+                    op1 = pop();
+                    if (op2 != 0.0)
+                        push(op1 / op2);
+                    else
+                        printf("error: zero divisor\n");
+                    break;
+                case '\n':
+                    CHECKOPCNT(sp, 1);
+                    printf("%.8g\n", pop());
+                    break;
+                default:
+                    printf("error: unknown command %c\n", c);
+                    break;
+                }
+            }
         }
     }
 
     return 0;
 }
 
-int getop(char s[])
+int get_line(char s[], int lim)
 {
-    int i = 0;
-    int c;
+    int c, i = 0;
 
-    while (*s == ' ' || *s == '\t') /* skip whitespaces */
-        s++;
-
-    if (!isdigit(*s) && *s != '.') /* not a number */
-        return *s;
-
-    if (isdigit(*s)) /* get integer part */
-        while (isdigit(*s))
-            s++;
-
-    if (*s == '.') /* get fractional part */
+    while (i < lim - 1 && (c = getchar()) != EOF)
     {
-        s++;
-        while (isdigit(*s))
-            s++;
+        s[i++] = c;
+        if (c == '\n')
+            break;
     }
-    *s = '\0';
-    return NUMBER;
+
+    s[i] = '\0';
+    return i;
 }
 
 #define MAXVAL 100 /* maximum depth of val stack */
