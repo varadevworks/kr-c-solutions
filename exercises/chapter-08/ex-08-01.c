@@ -13,20 +13,21 @@ int main(int argc, char *argv[])
     {
         if (cat(STDIN_FILENO, STDOUT_FILENO) == -1)
             e |= 1;
+        return e;
     }
-    else
-        while (--argc > 0)
-            if ((fd = open(*++argv, O_RDONLY, 0)) == -1)
-            {
-                fprintf(stderr, "cat: can't open %s\n", *argv);
+
+    while (--argc > 0)
+        if ((fd = open(*++argv, O_RDONLY, 0)) == -1)
+        {
+            fprintf(stderr, "cat: can't open %s\n", *argv);
+            e |= 1;
+        }
+        else
+        {
+            if (cat(fd, STDOUT_FILENO) == -1)
                 e |= 1;
-            }
-            else
-            {
-                if (cat(fd, STDOUT_FILENO) == -1)
-                    e |= 1;
-                close(fd);
-            }
+            close(fd);
+        }
 
     return e;
 }
