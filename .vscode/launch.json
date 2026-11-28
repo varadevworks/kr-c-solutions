@@ -1,0 +1,69 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      // 1. No args, type stdin in the integrated terminal (Ctrl+D = EOF)
+      "name": "Launch: no args (terminal stdin)",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/${fileBasenameNoExtension}",
+      "args": [],
+      "cwd": "${workspaceFolder}",
+      "terminal": "integrated",
+      "preLaunchTask": "Build active file"
+    },
+    {
+      // 2. Args typed at a prompt each run, no stdin (space-separated; quote values containing spaces)
+      "name": "Launch: prompt for args",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/${fileBasenameNoExtension}",
+      "cwd": "${workspaceFolder}",
+      "terminal": "integrated",
+      "stdio": null,
+      "preRunCommands": [
+        "settings set -f -- target.run-args ${input:progArgs}"
+      ],
+      "preLaunchTask": "Build active file"
+    },
+    {
+      // 3. Stdin file (full path) prompted each run, no args
+      "name": "Launch: prompt for stdin file",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/${fileBasenameNoExtension}",
+      "cwd": "${workspaceFolder}",
+      "terminal": "integrated",
+      "stdio": ["${input:stdinFullPath}", null],
+      "preLaunchTask": "Build active file"
+    },
+    {
+      // 4. Stdin file (full path) and args both prompted each run
+      "name": "Launch: prompt for stdin file + args",
+      "type": "lldb",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/${fileBasenameNoExtension}",
+      "cwd": "${workspaceFolder}",
+      "terminal": "integrated",
+      "stdio": ["${input:stdinFullPath}", null],
+      "preRunCommands": [
+        "settings set -f -- target.run-args ${input:progArgs}"
+      ],
+      "preLaunchTask": "Build active file"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "progArgs",
+      "type": "promptString",
+      "description": "Program arguments (space separated)",
+      "default": ""
+    },
+    {
+      "id": "stdinFullPath",
+      "type": "promptString",
+      "description": "Full path to stdin file",
+      "default": ""
+    }
+  ]
+}
